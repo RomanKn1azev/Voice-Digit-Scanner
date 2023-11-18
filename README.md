@@ -9,7 +9,6 @@ Voice-Digit-Scanner это приложение с открытым исходн
 
 Подробную информацию о поддерживаемых в настоящее время архитектурах можно найти [здесь]().
 
-Журнал изменений и общий список возможностей этого репозитория можно посмотреть [здесь]().
 
 ## Оглавление
 1. [Зависимости](#зависимости)
@@ -20,9 +19,9 @@ Voice-Digit-Scanner это приложение с открытым исходн
 
 ### Зависимости
 
--   Python 3 (Рекомендуем к использованию [Anaconda](https://www.anaconda.com/download/#linux))
+-   Python 3.9 (Рекомендуем к использованию [Anaconda](https://www.anaconda.com/download/#linux))
 -   [PyTorch >= 0.4.0](https://pytorch.org/). PyTorch >= 1.7.0 необходимые для включения определенных функций, и также [torchvision](https://pytorch.org/vision/stable/index.html).
--   NVIDIA CPU | GPU + [CUDA](https://developer.nvidia.com/cuda-downloads)
+-   NVIDIA CPU | MPS(https://developer.nvidia.com/cuda-downloads)
 -   Python packages: `pip install numpy opencv-python`
 - Файлы `JSON` могут использоваться для файлов опций конфигурации, но для использования `YAML` необходимо также установить зависимость от python-пакета `PyYAML`: [`pip install PyYAML`](https://pyyaml.org/)
 - Библиотека обработки аудио: `pip install librosa`
@@ -44,7 +43,7 @@ Voice-Digit-Scanner это приложение с открытым исходн
 Рекомендуемый способ начать работу с некоторыми моделями, полученными с помощью обучающих кодов, доступных в этом репозитории, - это получить [models](#models) для тестирования и запустить их в [app](#app).
 
 
-## Набор-данных
+## Наборы данных
 На этой странице представлен некоторый стандарт [набора данных](https://www.kaggle.com/datasets/sripaadsrinivasan/audio-mnist), используемый для обучения моделей.
 
 Для данного набора данных сделана аугментация для цифр с 4 по 7 (добавление шума, интерполяция, децимация).

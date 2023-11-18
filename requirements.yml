@@ -1,0 +1,28 @@
+name: voice-digit-scanner
+channels:
+  - anaconda
+  - conda-forge
+  - pytorch
+  - pypi
+
+dependencies:
+  - python=3.9.18
+  - PyYAML
+  - numpy
+  - pandas
+  - scipy
+  - scikit-learn
+  - matplotlib
+  - pillow
+  - opencv
+  - pyaudio
+  - pyqt
+  - tensorboardX
+  - librosa
+  - pytorch
+  - torchvision
+  - torchaudio
+  # - pyaudio
+  # - sounddevice
+  # - soundfile
+  - pydub
