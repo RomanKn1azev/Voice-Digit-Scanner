@@ -22,7 +22,5 @@ dependencies:
   - pytorch
   - torchvision
   - torchaudio
-  # - pyaudio
-  # - sounddevice
-  # - soundfile
+  - pyaudio
   - pydub

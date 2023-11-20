@@ -19,9 +19,10 @@ Voice-Digit-Scanner это приложение с открытым исходн
 
 ### Зависимости
 
+- !Обновить
 -   Python 3.9 (Рекомендуем к использованию [Anaconda](https://www.anaconda.com/download/#linux))
 -   [PyTorch >= 0.4.0](https://pytorch.org/). PyTorch >= 1.7.0 необходимые для включения определенных функций, и также [torchvision](https://pytorch.org/vision/stable/index.html).
--   NVIDIA CPU | MPS(https://developer.nvidia.com/cuda-downloads)
+-   NVIDIA CPU | MPS | GPU + [CUDA] (https://developer.nvidia.com/cuda-downloads)
 -   Python packages: `pip install numpy opencv-python`
 - Файлы `JSON` могут использоваться для файлов опций конфигурации, но для использования `YAML` необходимо также установить зависимость от python-пакета `PyYAML`: [`pip install PyYAML`](https://pyyaml.org/)
 - Библиотека обработки аудио: `pip install librosa`
