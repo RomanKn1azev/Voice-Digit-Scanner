@@ -7,6 +7,7 @@ channels:
 
 dependencies:
   - python=3.9.18
+  - tqdm
   - PyYAML
   - numpy
   - pandas
@@ -19,6 +20,8 @@ dependencies:
   - pyqt
   - tensorboardX
   - librosa
+  - xdboost
+  - catboost
   - pytorch
   - torchvision
   - torchaudio

@@ -1,0 +1,17 @@
+type:
+  select:
+    - name: original
+      classes: 
+        - 4
+        - 5
+        - 6
+        - 7
+      augmentation:
+        - name: noise
+          param: 0
+        - name: interpolation
+          param: 0
+        - name: decimation
+          param: 0
+        - name: reverberations
+          param: 0

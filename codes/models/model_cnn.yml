@@ -1,0 +1,49 @@
+arch: 
+    lite:
+      layers:
+        - type: Conv2d
+          in_channels: 1
+          out_channels: 10
+          kernel_size: 7
+          stride: 3
+          padding: 1
+        - type: ReLU
+        - type: Conv2d
+          in_channels: 10
+          out_channels: 10
+          kernel_size: 5
+          stride: 2
+          padding: 1
+        - type: ReLU
+        - type: Flatten
+        - type: Linear
+          in_features: 7220
+          out_features: 10
+
+      optimizer:
+        name: AdamW
+        weight_decay: 0.001
+        betas:
+          - 0.9 # beta1
+          - 0.999 # beta2
+        lr: 0.001
+        
+      scheduler:
+        name: OneCycleLR
+        max_lr: 0.001
+        anneal_strategy: linear
+        # steps_per_epoch: 100
+
+      loss: CrossEntropyLoss
+        
+      metrics:
+        - accuracy
+        - roc_auc
+        - log_loss
+        - precision
+        - recall
+
+
+      epochs: 30
+    
+    

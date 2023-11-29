@@ -1,0 +1,40 @@
+random_seed: 42
+device: mps # cpu, cuda, mps
+
+tasks:
+  train:
+    data:
+      - type: dir
+        name: original
+        path: data
+        frequency: 48000
+
+        split: True
+        test_size: 0.05
+        val_size: 0.05
+        
+        shuffle: True
+
+        path_to_csv: csv_data/original
+            
+    dataloader:
+        batch_size: 16    
+        num_workers: 4
+    
+    augmentation: codes/data/augmentation.yml
+
+    model: codes/models/model_cnn.yml
+
+    results:
+      model_results: model_results.yml
+      model_object: model_object.pkl
+
+    plots: 
+      refer: plots
+      spectra: 
+        refer: plots/spectra
+        num: 5
+      loss: loss.png
+      metrics: 
+        refer: plots/metrics
+        
