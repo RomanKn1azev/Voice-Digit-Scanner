@@ -1,0 +1,12 @@
+Running Script...
+  0%|          | 0/188 [00:00<?, ?it/s]  1%|          | 1/188 [00:04<15:10,  4.87s/it]  1%|          | 2/188 [00:09<15:12,  4.91s/it]  2%|▏         | 3/188 [00:18<20:57,  6.80s/it]  2%|▏         | 4/188 [00:27<23:35,  7.69s/it]  3%|▎         | 5/188 [00:34<22:30,  7.38s/it]  3%|▎         | 6/188 [00:43<24:14,  7.99s/it]  4%|▎         | 7/188 [00:52<24:28,  8.11s/it]  4%|▍         | 8/188 [01:00<24:00,  8.00s/it]  5%|▍         | 9/188 [01:09<25:39,  8.60s/it]  5%|▌         | 10/188 [01:20<27:22,  9.23s/it]  6%|▌         | 11/188 [01:29<26:54,  9.12s/it]  6%|▋         | 12/188 [01:40<28:02,  9.56s/it]  7%|▋         | 13/188 [01:47<26:06,  8.95s/it]  7%|▋         | 14/188 [01:55<24:41,  8.51s/it]  8%|▊         | 15/188 [02:03<24:43,  8.58s/it]  9%|▊         | 16/188 [02:11<23:43,  8.28s/it]  9%|▉         | 17/188 [02:20<24:04,  8.45s/it] 10%|▉         | 18/188 [02:31<26:04,  9.21s/it] 10%|█         | 19/188 [02:40<26:21,  9.36s/it] 11%|█         | 20/188 [02:48<24:51,  8.88s/it] 11%|█         | 21/188 [02:58<25:23,  9.12s/it] 12%|█▏        | 22/188 [03:05<23:16,  8.41s/it] 12%|█▏        | 23/188 [03:12<22:26,  8.16s/it] 12%|█▏        | 23/188 [03:21<24:05,  8.76s/it]
+Traceback (most recent call last):
+  File "/Users/romanknazev/Desktop/тестовое задание/main.py", line 33, in <module>
+    main()
+  File "/Users/romanknazev/Desktop/тестовое задание/main.py", line 28, in main
+    Setup(cfg).run_tasks()
+  File "/Users/romanknazev/Desktop/тестовое задание/codes/setup.py", line 34, in run_tasks
+    losses, val_lossses, accuracy, val_accuracy = cnn_trainer.train(
+  File "/Users/romanknazev/Desktop/тестовое задание/codes/models/cnn_train.py", line 150, in train
+    running_loss += loss.item()
+KeyboardInterrupt

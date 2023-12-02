@@ -4,7 +4,7 @@ import random
 
 
 from typing import List
-from codes.utils.utils import shuffle_data, build_csv, split_data
+from codes.utils.utils import shuffle_data, build_csv, split_data, random_choice, dict_to_str_csv
 
 
 class DataToCsv:
@@ -32,10 +32,12 @@ class DataToCsv:
     def create_csv(self):
         """
         Резюме:
-        Этот код подготавливает данные для машинного обучения, создавая CSV-файлы, содержащий пути к файлам и соответствующие метки.
+        Этот код подготавливает данные для машинного обучения, 
+        создавая CSV-файлы, содержащий пути к файлам и соответствующие метки и аугментации.
 
         Метод создает CSV-файлы, рекурсивно перебирая все файлы и подкаталоги в указанных каталогах.
-        Для каждого файла, если он имеет расширение .wav, в список добавляется путь к файлу и метка (полученная из имени файла).
+        Для каждого файла, если он имеет расширение .wav, 
+        в список добавляется путь к файлу и метка (полученная из имени файла), и случайная аугментация для определенных классов.
 
         Аргументы:
         - self (object): объект, к которому принадлежит функция. 
@@ -47,6 +49,10 @@ class DataToCsv:
         # Проходимся рекурсивно по всем файлам и поддиректориям в указанной директории
         for dir_params in dirs_params:
             curr_root = dir_params.get('path')
+            augmentation = dir_params.get('augmentation')
+            classes = augmentation.get('classes')
+            type_aug = augmentation.get('augmentation')
+
             data = []
             for root, dirs, files in os.walk(curr_root):
                 for file_name in files:
@@ -57,8 +63,20 @@ class DataToCsv:
                         label, _ = os.path.splitext(file_name)
                         label_rest = label.split('_')[0]
                         
-                        # Добавляем путь и метку в список данных
-                        data.append([file_path, label_rest])
+                        # Добавляем путь, метку, аугментация в список данных
+                        data.append([file_path, label_rest, None, None])
+
+                        for label_rest in classes:
+                            choice_aug = random_choice(type_aug)
+                            data.append(
+                                [
+                                    file_path,
+                                    label_rest,
+                                    choice_aug.get('name'),
+                                    dict_to_str_csv(choice_aug.get('param'))
+                                ]
+                            )
+                        
             
             if dir_params.get('shuffle'):
                 shuffle_data(data)

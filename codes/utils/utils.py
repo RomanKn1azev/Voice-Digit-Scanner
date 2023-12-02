@@ -1,7 +1,8 @@
 import torch
+import matplotlib.pyplot as plt
 
 
-from random import shuffle, seed as rand_seed
+from random import shuffle, seed as rand_seed, choices
 
 from numpy.random import seed as np_seed
 from torch import manual_seed
@@ -9,6 +10,7 @@ from torch.cuda import manual_seed_all
 from torch.mps import manual_seed as mps_manual_seed
 
 from csv import writer as wr
+from tqdm import tqdm
 
 def shuffle_data(data: list):
     """
@@ -101,3 +103,102 @@ def setting_device(device_name: str):
         device_name = 'cpu'
         
     return torch.device(device_name)
+
+
+def random_choice(list: list):
+    """
+    Функция 'random_choice' принимает список и возвращает случайно выбранный элемент из этого списка.
+
+    Аргументы:
+    - list: list - обязательный аргумент, представляющий список элементов.
+
+    Возвращаемое значение:
+    Функция возвращает случайно выбранный элемент из списка.
+    """
+    return choices(list, k=1)[0]
+
+
+def dict_to_str_csv(param: dict):
+    """
+    Функция dict_to_str_csv принимает в качестве параметра словарь param 
+    и выполняет преобразование словаря в строку в формате CSV.
+    Каждая пара ключ-значение словаря представляется в виде ключ=значение.
+
+    Параметры:
+    - param: словарь, который нужно преобразовать в строку формата CSV.
+
+    Возвращаемое значение:
+    - Функция возвращает строку, полученную путем преобразования словаря param в формат CSV.
+    """
+    return ";".join(f"{key}={value}" for key, value in param.items())
+
+
+def str_csv_to_dict(param: str):
+    """
+    Функция str_csv_to_dict преобразует строку в формате CSV в словарь.
+
+    Аргумент:
+    - param (строка): Строка в формате CSV, где каждая пара ключ=значение разделена точкой с запятой (;).
+
+    Возвращаемое значение:
+    - Функция возвращает словарь, полученную путем преобразования строки param.
+    """
+    return dict(map(lambda x: x.split("="), param.split(";")))
+
+
+def evaluate(model, val_dl, device, loss_func): 
+        model.eval()
+
+        running_loss = 0.0
+        correct_prediction = 0
+        total_prediction = 0
+        
+        with torch.no_grad():
+            for X, y in tqdm(val_dl):
+                print
+                X, y = X.to(device), y.to(device)
+
+                outputs = model(X)
+                
+                loss = loss_func(outputs, y.long())
+
+                running_loss += loss.item()
+
+                _, prediction = torch.max(outputs, 1)
+                correct_prediction += (prediction == y).sum().item()
+                total_prediction += prediction.shape[0]
+
+            num_batches = len(val_dl)
+            avg_loss = running_loss / num_batches
+            acc = correct_prediction / total_prediction
+
+        return acc, avg_loss
+
+
+def save_model(model_dict, path):
+    torch.save(model_dict, path)
+
+
+def load_model(model, path):
+    model.load_state_dict(torch.load(path))
+
+
+def plot_schedule_losses(train_losses, val_lossses, path):
+    plt.figure()
+    plt.plot(range(train_losses), train_losses, range(len(val_lossses)), val_lossses)
+    plt.xlabel('Epoch')
+    plt.ylabel('Loss')
+    plt.legend(['Training Loss', 'Validation Loss'])
+    plt.savefig(path)
+
+
+def plot_schedule_accuracy(train_accuracy, val_accuracy, path):
+    plt.figure()
+    plt.plot(range(train_accuracy), train_accuracy, range(len(val_accuracy)), val_accuracy)
+    plt.xlabel('Epoch')
+    plt.ylabel('Loss')
+    plt.legend(['Training Accuracy', 'Validation Accuracy'])
+    plt.savefig(path)
+
+
+

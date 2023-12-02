@@ -7,7 +7,6 @@ tasks:
       - type: dir
         name: original
         path: data
-        frequency: 48000
 
         split: True
         test_size: 0.05
@@ -15,26 +14,53 @@ tasks:
         
         shuffle: True
 
+        augmentation: 
+          classes: 
+            - 4
+            - 5
+            - 6
+            - 7
+          augmentation:
+            - name: change_volume
+              param:
+                level: 2
+            - name: change_tonalities
+              param:
+                n_steps: 2
+            - name: add_noise
+              param: 
+                type: pink
+                level: 0.25
+
         path_to_csv: csv_data/original
-            
+
+    dataset:
+      paths:
+        train: 
+        - csv_data/original/train.csv
+        val: 
+        - csv_data/original/val.csv
+        test: 
+        - csv_data/original/test.csv
+
     dataloader:
         batch_size: 16    
-        num_workers: 4
-    
-    augmentation: codes/data/augmentation.yml
+        num_workers: 2
 
     model: codes/models/model_cnn.yml
 
     results:
-      model_results: model_results.yml
-      model_object: model_object.pkl
+      model_object: results/model_v1.pth
 
     plots: 
-      refer: plots
-      spectra: 
-        refer: plots/spectra
-        num: 5
-      loss: loss.png
-      metrics: 
-        refer: plots/metrics
+      # spectra: 
+      #   refer: plots/spectra
+      #   num: 5
+      loss: plots/loss.png
+
+      accuracy: plots/metrics/accuracy.png
+      # precision: plots/metrics/precision.png
+      # recall: plots/metrics/recall.png
+      # f1: plots/metrics/f1.png
+      # roc: plots/metrics/roc.png
         

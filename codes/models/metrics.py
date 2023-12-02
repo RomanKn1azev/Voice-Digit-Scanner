@@ -7,10 +7,11 @@ from sklearn.metrics import f1_score, roc_auc_score, precision_score, recall_sco
 
 def create_accuracy_metric():
     def accuracy(y_true, y_pred):
-        y_pred_classes = torch.argmax(y_pred, dim=1)
-        correct = (y_pred_classes == y_true).sum().item()
-        total = y_true.size(0)
-        return correct / total
+        _, prediction = torch.max(y_pred, 1)
+        correct_prediction += (prediction == y_true).sum().item()
+        total_prediction += prediction.shape[0]
+        
+        return correct_prediction / total_prediction
     return accuracy
 
 

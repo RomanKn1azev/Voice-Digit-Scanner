@@ -1,0 +1,12 @@
+Running Script...
+  0%|          | 0/8438 [00:00<?, ?it/s]  0%|          | 1/8438 [00:07<18:29:43,  7.89s/it]  0%|          | 2/8438 [00:12<14:22:21,  6.13s/it]  0%|          | 3/8438 [00:19<15:29:41,  6.61s/it]  0%|          | 4/8438 [00:28<16:58:43,  7.25s/it]  0%|          | 5/8438 [00:39<20:06:13,  8.58s/it]  0%|          | 6/8438 [00:45<18:36:40,  7.95s/it]  0%|          | 7/8438 [00:54<19:13:16,  8.21s/it]  0%|          | 8/8438 [01:00<17:24:21,  7.43s/it]  0%|          | 9/8438 [01:09<18:33:12,  7.92s/it]  0%|          | 10/8438 [01:16<18:05:37,  7.73s/it]  0%|          | 11/8438 [01:30<22:07:53,  9.45s/it]  0%|          | 12/8438 [01:44<26:00:46, 11.11s/it]  0%|          | 13/8438 [01:56<26:21:50, 11.27s/it]  0%|          | 14/8438 [02:04<23:59:41, 10.25s/it]  0%|          | 14/8438 [02:27<24:41:04, 10.55s/it]
+Traceback (most recent call last):
+  File "/Users/romanknazev/Desktop/тестовое задание/main.py", line 33, in <module>
+    main()
+  File "/Users/romanknazev/Desktop/тестовое задание/main.py", line 28, in main
+    Setup(cfg).run_tasks()
+  File "/Users/romanknazev/Desktop/тестовое задание/codes/setup.py", line 34, in run_tasks
+    losses, val_lossses, accuracy, val_accuracy = cnn_trainer.train(
+  File "/Users/romanknazev/Desktop/тестовое задание/codes/models/cnn_train.py", line 150, in train
+    running_loss += loss.item()
+KeyboardInterrupt

@@ -1,4 +1,4 @@
-path_log="logs/run_$(date +%Y%m%d).log"
+path_log="logs/run_$(date +%Y_%m_%d_%H:%M:%S).log"
 
 echo "Running Script..." >> "$path_log" 2>&1
 
