@@ -2,8 +2,8 @@ import yaml
 
 
 from codes.data.data_preparation import DataToCsv
-from codes.data.dataset import BuildDataLoader, PredictionDataloader
-from codes.utils.utils import setting_seed, predict, setting_device, save_model, load_model, plot_schedule_accuracy, plot_schedule_losses, evaluate
+from codes.data.dataset import BuildDataLoader
+from codes.utils.utils import setting_seed, plot_spectra, setting_device, save_model, load_model, plot_schedule_accuracy, plot_schedule_losses, evaluate
 from codes.models.cnn import CNN
 
 
@@ -74,4 +74,10 @@ class Setup:
             print("Test accuacy: %.2f, Test loss: %.3f" % (evaluate(cnn.model, test_dataloader, self.device)))
 
         if tasks.get('plot_spectra'):
-            ...
+            plot_spectra_params = tasks.get('plot_spectra')
+            refer = plot_spectra_params.get('refer')
+            num = plot_spectra_params.get('num')
+            paths = plot_spectra_params.get('paths')
+
+            plot_spectra(refer, num, paths)
+

@@ -1,25 +1,0 @@
-Running Script...
-CNN2DAudioClassifier(
-  (sequential): Sequential(
-    (0): Conv2d(1, 8, kernel_size=(5, 5), stride=(2, 2), padding=(2, 2))
-    (1): ReLU()
-    (2): BatchNorm2d(8, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-    (3): Conv2d(8, 16, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
-    (4): ReLU()
-    (5): BatchNorm2d(16, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-    (6): Conv2d(16, 32, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
-    (7): ReLU()
-    (8): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-    (9): Conv2d(32, 64, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
-    (10): ReLU()
-    (11): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-    (12): AdaptiveAvgPool2d(output_size=1)
-    (13): Flatten(start_dim=1, end_dim=-1)
-    (14): Linear(in_features=64, out_features=10, bias=True)
-  )
-)
-  0%|          | 0/2 [00:00<?, ?it/s] 50%|█████     | 1/2 [00:02<00:02,  2.14s/it]100%|██████████| 2/2 [00:12<00:00,  6.08s/it]
-tensor([2, 8], device='mps:0')
-tensor([9, 9], device='mps:0')
-Test accuacy: 0.50, Test loss: 1.343
-Run Finished!

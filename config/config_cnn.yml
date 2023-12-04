@@ -79,37 +79,37 @@ tasks:
   #               level: 0.2
         
 
-  # plot_spectra:
-  #   refer:
-  #   num: 5
+  plot_spectra:
+    refer: plots/spectra/union_dataset
+    num: 5
+    paths:
+      - csv_data/original/train.csv
+      - csv_data/original/val.csv
+      - csv_data/original/test.csv
+      - csv_data/my_data/test.csv
+      - csv_data/my_data/train.csv
+      - csv_data/my_data/val.csv
+        
+  # test:
   #   dataset:
   #     paths:
-  #       - csv_data/original/train.csv
-  #       - csv_data/original/val.csv
-  #       - csv_data/original/test.csv
-        
-  test:
-    dataset:
-      paths:
-          - csv_data/prediction/test.csv
+  #         - csv_data/my_data/test.csv
+  #         - csv_data/original/test.csv
 
-    dataloader:
-      batch_size: 2    
-      num_workers: 2
-      shuffle: False
+  #   dataloader:
+  #     batch_size: 4   
+  #     num_workers: 2
+  #     shuffle: False
 
-    arch: 
-      name: lite 
-      refer: codes/models/model_cnn.yml
+  #   arch: 
+  #     name: lite 
+  #     refer: codes/models/model_cnn.yml
 
-    save_model: results/model_v3.pth   
+  #   save_model: results/model_v3.pth   
 
-    plots: 
-      accuracy: plots/model_v3/test/metrics/accuracy.png
-      precision: plots/model_v2/test/metrics/precision.png
-      recall: plots/model_v2/test/metrics/recall.png
-      f1: plots/model_v2/test/metrics/f1.png
-      roc: plots/model_v2/test/metrics/roc.png
+  #   plots:
+  #     loss: plots/model_v3/test/loss.png
+  #     accuracy: plots/model_v3/test/metrics/accuracy.png
 
   # train:
   #   dataset:
@@ -133,10 +133,10 @@ tasks:
   #   model: codes/models/model_cnn.yml
 
   #   results:
-  #     model_object: results/model_v3.pth
+  #     model_object: results/model_v4.pth
 
   #   plots: 
-  #     loss: plots/model_v3/train/loss.png
+  #     loss: plots/model_v4/train/loss.png
 
-  #     accuracy: plots/model_v3/train/metrics/accuracy.png
+  #     accuracy: plots/model_v4/train/metrics/accuracy.png
         

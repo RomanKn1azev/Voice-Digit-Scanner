@@ -5,7 +5,7 @@ import numpy as np
 import yaml
 
 
-from random import shuffle, seed as rand_seed, choices, random
+from random import shuffle, seed as rand_seed, choices, random, sample as rn_sample
 
 from numpy.random import seed as np_seed
 from torch import manual_seed
@@ -14,6 +14,8 @@ from torch.mps import manual_seed as mps_manual_seed
 
 from csv import writer as wr
 from tqdm import tqdm
+
+from codes.data.csv_reader import CsvReader
 
 
 def shuffle_data(data: list):
@@ -282,3 +284,29 @@ def windowing(file, sample_rate=48_000, step_length=.01):
 
     return melspectrograms_dB
 
+
+def plot_spectra(refer, num, paths):
+    df = CsvReader(paths).df
+
+    unique_labels = df['Label'].unique()
+
+    for label in unique_labels:
+        label_data = df[df['Label'] == label]
+
+        random_indices = rn_sample(range(len(label_data)), num)
+        random_samples = label_data.iloc[random_indices]
+
+        i = 1
+        for _, sample in random_samples.iterrows():
+            audio_path = sample['Path']
+            audio, sr = librosa.load(audio_path, sr=48_000)
+
+            plt.figure(figsize=(10, 4))
+            spectrogram = librosa.amplitude_to_db(librosa.stft(audio), ref=np.max)
+            librosa.display.specshow(spectrogram, y_axis='log', x_axis='time')
+            plt.colorbar(format='%+2.0f dB')
+            plt.title(f'Spectrogram ({label})')
+            plt.tight_layout()
+            plt.savefig(f"{refer}/{label}/{label}_{i}.png")
+
+            i += 1

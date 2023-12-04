@@ -45,13 +45,7 @@ class BaseDataset(Dataset):
 
         melspectrogram = librosa.feature.melspectrogram(y=waveform_pad, sr=sample_rate, n_mels=128, fmax=4096)
         melspectrogram_dB = librosa.power_to_db(melspectrogram, ref=np.max)
-
-        # plt.figure(figsize=(12, 8))
-        # librosa.display.specshow(melspectrogram, sr=sample_rate, x_axis='time', y_axis='mel')
-        # plt.colorbar(format='%+2.0f dB')
-        # plt.title('Spectrogram')
-        # plt.show()
-
+        
         return(torch.tensor(melspectrogram_dB, dtype=torch.float32).unsqueeze(0), torch.tensor(label, dtype=torch.float32))
     
 

@@ -15,7 +15,7 @@ from pydub.playback import play
 
 from codes.models.build_model import build_model_from_file
 from codes.data.dataset import PredictionDataloader
-from codes.utils.utils import predict, save_melspectrograms_dB_settings
+from codes.utils.utils import predict
 
 
 class MainWindow(QMainWindow):
