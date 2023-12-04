@@ -4,7 +4,7 @@ import random
 
 
 from typing import List
-from codes.utils.utils import shuffle_data, build_csv, split_data, random_choice, dict_to_str_csv
+from codes.utils.utils import shuffle_data, build_csv, split_data, build_data_csv
 
 
 class DataToCsv:
@@ -51,7 +51,8 @@ class DataToCsv:
             curr_root = dir_params.get('path')
             augmentation = dir_params.get('augmentation')
             classes = augmentation.get('classes')
-            type_aug = augmentation.get('augmentation')
+            types_aug = augmentation.get('augmentation')
+            probability = augmentation.get('probability')
 
             data = []
             for root, dirs, files in os.walk(curr_root):
@@ -63,19 +64,8 @@ class DataToCsv:
                         label, _ = os.path.splitext(file_name)
                         label_rest = label.split('_')[0]
                         
-                        # Добавляем путь, метку, аугментация в список данных
-                        data.append([file_path, label_rest, None, None])
-
-                        for label_rest in classes:
-                            choice_aug = random_choice(type_aug)
-                            data.append(
-                                [
-                                    file_path,
-                                    label_rest,
-                                    choice_aug.get('name'),
-                                    dict_to_str_csv(choice_aug.get('param'))
-                                ]
-                            )
+                        # Добавляем путь, метку, аугментацию в список данных
+                        data.append(build_data_csv(file_path, label_rest, probability, classes, types_aug))
                         
             
             if dir_params.get('shuffle'):

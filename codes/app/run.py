@@ -5,12 +5,17 @@ import wave
 import time
 import threading
 import datetime
+import yaml
 
 
-from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QFileDialog, QLabel, QVBoxLayout, QComboBox, QDialog
+from PyQt5.QtWidgets import QMainWindow, QPushButton, QFileDialog, QLabel, QVBoxLayout, QComboBox, QDialog
 from PyQt5.QtCore import Qt
 from pydub import AudioSegment
 from pydub.playback import play
+
+from codes.models.build_model import build_model_from_file
+from codes.data.dataset import PredictionDataloader
+from codes.utils.utils import predict, save_melspectrograms_dB_settings
 
 
 class MainWindow(QMainWindow):
@@ -18,17 +23,21 @@ class MainWindow(QMainWindow):
         super().__init__()
 
         self.FORMAT = pyaudio.paInt16
-        self.DIRECTION = "records_micro"
+        self.RECORD_DIRECTION = "records_micro"
+        self.MODEL_DIRECTION = "config/models"
         self.CHANNELS = 1
-        self.RATE = 22050
+        self.RATE = 48_000
         self.INPUT = True
         self.FRAMES = 1024
 
 
         self.file_path = ""
         self.input_device_index = 0
+        self.selected_model = ""
         self.audio_segment = None
         self.recording = False
+
+        self.model = None
         
 
         self.setWindowTitle("Voice Digit Scanner")
@@ -66,6 +75,14 @@ class MainWindow(QMainWindow):
         self.time_label.setGeometry(300, 450, 200, 30)
         self.time_label.setAlignment(Qt.AlignCenter)
 
+        self.prediction_label = QLabel(self)
+        self.prediction_label.setGeometry(500, 450, 200, 30)
+        self.prediction_label.setAlignment(Qt.AlignCenter)
+
+        self.selected_model_label = QLabel(f"Выбранная модель: {self.selected_model}", self)
+        self.selected_model_label.setGeometry(100, 400, 200, 30)
+        self.selected_model_label.setAlignment(Qt.AlignCenter)
+
 
     def load_file(self):
         file_dialog = QFileDialog()
@@ -74,11 +91,43 @@ class MainWindow(QMainWindow):
             self.audio_segment = AudioSegment.from_file(self.file_path)
             self.status_label.setText(os.path.basename(self.file_path))
 
-    def select_model(self):
-        # TODO: Add code to select model
-        ...
+    def select_model(self):            
+        class ModelDialog(QDialog):
+            def __init__(self, models, parent=None):
+                super(ModelDialog, self).__init__(parent)
+                self.models = models
+                self.selected_model = None
+                
+                layout = QVBoxLayout()
+                
+                self.models_combo = QComboBox()
+                self.models_combo.addItems(self.models)
+                layout.addWidget(self.models_combo)
+                
+                self.save_button = QPushButton('Сохранить')
+                self.save_button.clicked.connect(self.save_model)
+                layout.addWidget(self.save_button)
+                
+                self.setLayout(layout)
+            
+            def save_model(self):
+                self.selected_model = self.models_combo.currentText()
+                self.accept()
 
-    
+        models = [f"{model}" for model in os.listdir(self.MODEL_DIRECTION)]
+
+        dialog = ModelDialog(models, self)
+        if dialog.exec_() == QDialog.Accepted:
+            self.selected_model = dialog.selected_model
+            self.selected_model_label.setText(f"Выбранная модель: {self.selected_model.split('.')[0]}")
+            model_path = os.path.join(self.MODEL_DIRECTION, self.selected_model)
+
+            with open(model_path, 'r') as file_option:
+                model_params = yaml.safe_load(file_option)
+            
+            self.model = build_model_from_file(model_params)
+
+
     def select_device(self):
         class DeviceDialog(QDialog):
             def __init__(self, devices, parent=None):
@@ -154,14 +203,14 @@ class MainWindow(QMainWindow):
         pa.terminate()
 
         current_time = datetime.datetime.now().strftime('%H_%M_%S')
-        sound_file = wave.open(f"{self.DIRECTION}/{current_time}.wav", 'wb')
+        sound_file = wave.open(f"{self.RECORD_DIRECTION}/{current_time}.wav", 'wb')
         sound_file.setnchannels(self.CHANNELS)
         sound_file.setsampwidth(pa.get_sample_size(self.FORMAT))
         sound_file.setframerate(self.RATE)
         sound_file.writeframes(b''.join(frames))
         sound_file.close()
 
-        self.file_path = f"{self.DIRECTION}/{current_time}.wav"
+        self.file_path = f"{self.RECORD_DIRECTION}/{current_time}.wav"
         self.audio_segment = AudioSegment.from_file(self.file_path)
         self.status_label.setText(os.path.basename(self.file_path))
 
@@ -171,16 +220,9 @@ class MainWindow(QMainWindow):
 
     def recognize(self):
         if self.audio_segment:
-            # TODO: Add code to recognize audio
-            ...
-
-
-def main():
-    app = QApplication(sys.argv)
-    window = MainWindow()
-    window.show()
-    sys.exit(app.exec())
-
-
-if __name__ == "__main__":
-    main()
+            prediction_dataloader = PredictionDataloader(self.file_path).dataloader
+            
+            if self.model:
+                self.prediction_label.setText(f"{predict(self.model.model, prediction_dataloader, device='cpu')}")
+            else:
+                print("Model not selected")

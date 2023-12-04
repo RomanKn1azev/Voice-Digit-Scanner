@@ -11,6 +11,8 @@ import torch.nn as nn
 
 from codes.setup import Setup
 
+from codes.data.dataset import PredictionDataloader
+
 
 def main():
     parser = argparse.ArgumentParser()
@@ -28,6 +30,11 @@ def main():
     Setup(cfg).run_tasks()
     ...
 
+# def check(file):
+#     dataloder = PredictionDataloader(file).dataloader
+
+#     for X in dataloder:
+#         print(X.shape)
 
 if __name__ == "__main__":
     main()

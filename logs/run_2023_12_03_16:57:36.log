@@ -1,0 +1,26 @@
+Running Script...
+/Users/romanknazev/opt/anaconda3/envs/voice/lib/python3.9/site-packages/librosa/core/spectrum.py:257: UserWarning: n_fft=2048 is too large for input signal of length=1
+  warnings.warn(
+[[ 0.        ]
+ [ 0.        ]
+ [ 0.        ]
+ ...
+ [ 0.00027466]
+ [-0.00021362]
+ [-0.00149536]]
+Traceback (most recent call last):
+  File "/Users/romanknazev/Desktop/тестовое задание/main.py", line 42, in <module>
+    check(file)
+  File "/Users/romanknazev/Desktop/тестовое задание/main.py", line 34, in check
+    dataloder = PredictionDataloader(file).dataloader
+  File "/Users/romanknazev/Desktop/тестовое задание/codes/data/dataset.py", line 81, in __init__
+    self.dataloader = DataLoader(PredictionDataset(file), batch_size=1)
+  File "/Users/romanknazev/Desktop/тестовое задание/codes/data/dataset.py", line 64, in __init__
+    self.melspectrograms_dB = windowing(file)
+  File "/Users/romanknazev/Desktop/тестовое задание/codes/utils/utils.py", line 230, in windowing
+    mel_spectrogram = librosa.feature.melspectrogram(y=segment, sr=sample_rate, n_mels=128, fmax=4096)
+  File "/Users/romanknazev/opt/anaconda3/envs/voice/lib/python3.9/site-packages/librosa/feature/spectral.py", line 2143, in melspectrogram
+    mel_basis = filters.mel(sr=sr, n_fft=n_fft, **kwargs)
+  File "/Users/romanknazev/opt/anaconda3/envs/voice/lib/python3.9/site-packages/librosa/filters.py", line 231, in mel
+    ramps = np.subtract.outer(mel_f, fftfreqs)
+KeyboardInterrupt

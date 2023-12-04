@@ -3,57 +3,78 @@ arch:
       layers:
         - type: Conv2d
           in_channels: 1
-          out_channels: 16
+          out_channels: 8
           kernel_size: 5
-          stride: 1
+          stride: 2
           padding: 2
         - type: ReLU
-        - type: MaxPool2d
-          kernel_size: 2
+        - type: BatchNorm2d
+          num_features: 8
+
+        - type: Conv2d
+          in_channels: 8
+          out_channels: 16
+          kernel_size: 3
           stride: 2
+          padding: 1
+        - type: ReLU
+        - type: BatchNorm2d
+          num_features: 16
+
         - type: Conv2d
           in_channels: 16
           out_channels: 32
-          kernel_size: 5
-          stride: 1
-          padding: 2
-        - type: ReLU
-        - type: MaxPool2d
-          kernel_size: 2
+          kernel_size: 3
           stride: 2
-        - type: Flatten
-        - type: Linear
-          in_features: 188416
-          out_features: 2944
+          padding: 1
         - type: ReLU
+        - type: BatchNorm2d
+          num_features: 32
+        
+        - type: Conv2d
+          in_channels: 32
+          out_channels: 64
+          kernel_size: 3
+          stride: 2
+          padding: 1
+        - type: ReLU
+        - type: BatchNorm2d
+          num_features: 64
+        
+        - type: AdaptiveAvgPool2d
+          output_size: 1
+        
+        - type: Flatten
+
         - type: Linear
-          in_features: 2944
+          in_features: 64
           out_features: 10
           
 
       optimizer:
-        name: AdamW
-        weight_decay: 0.001
-        betas:
-          - 0.9 # beta1
-          - 0.999 # beta2
-        lr: 0.005
+        name: Adam
+        lr: 0.001
+
+        # name: AdamW
+        # weight_decay: 0.001
+        # betas:
+        #   - 0.9 # beta1
+        #   - 0.999 # beta2
+        # lr: 0.005
         
       scheduler:
         name: OneCycleLR
-        max_lr: 0.01
+        max_lr: 0.001
         anneal_strategy: linear
-        # steps_per_epoch: 100
 
       loss: CrossEntropyLoss
         
       metrics:
         - accuracy
         - roc_auc
-        # - log_loss
         - precision
         - recall
 
-      epochs: 30
+      epochs: 10
     
     

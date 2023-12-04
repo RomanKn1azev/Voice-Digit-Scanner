@@ -11,8 +11,8 @@ from tqdm import tqdm
 from codes.utils.utils import evaluate
 
 
-class CNN_Trainer:
-    def __init__(self, arch, config: dict, device, steps_per_epoch):
+class CNN:
+    def __init__(self, arch, config: dict, device, steps_per_epoch=1):
         self.arch = arch
         self.config = config
         self.epochs = self.config.get('epochs')
@@ -20,9 +20,9 @@ class CNN_Trainer:
         self.steps_per_epoch = steps_per_epoch
         self.model = self._build_model()
         self.optimizer = self._build_optimizer()
-        # self.scheduler = self._build_scheduler()
+        self.scheduler = self._build_scheduler()
         self.loss = self._build_loss()
-        # self.metrics = self._build_metrics()
+        self.metrics = self._build_metrics()
         
     def _build_model(self):        
         if self.arch == 'lite':
@@ -41,6 +41,8 @@ class CNN_Trainer:
             return optim.SGD(self.model.parameters(), **optim_param)
         elif name == "RMSprop":
             return optim.RMSprop(self.model.parameters(), **optim_param)
+        elif name == "Adam":
+            return optim.Adam(self.model.parameters(), **optim_param)
         else:
             raise ValueError(f"Unsupported optimizer: {name}")
     
@@ -53,7 +55,7 @@ class CNN_Trainer:
             return scheduler.OneCycleLR(
                 self.optimizer,
                 epochs=self.epochs,
-                steps_per_epoch = self.steps_per_epoch, # надо передовать длину даталоадера
+                steps_per_epoch = self.steps_per_epoch,
                 **scheduler_param
                 )
         else:
@@ -114,6 +116,8 @@ class CNN_Trainer:
                 layers.append(nn.Flatten())
             elif type_layer == "BatchNorm2d":
                 layers.append(nn.BatchNorm2d(**layer_param))
+            elif type_layer == "AdaptiveAvgPool2d":
+                layers.append(nn.AdaptiveAvgPool2d(**layer_param))
             elif type_layer == "Linear":
                 layers.append(nn.Linear(**layer_param))
 
@@ -133,8 +137,6 @@ class CNN_Trainer:
             running_loss = 0.0
             correct_prediction = 0
             total_prediction = 0
-
-            self.model.train()
             
             for X, y in tqdm(train_dl):
                 X, y = X.to(self.device), y.to(self.device)
@@ -145,7 +147,7 @@ class CNN_Trainer:
 
                 loss.backward()
                 self.optimizer.step()
-                # self.scheduler.step()
+                self.scheduler.step()
 
                 running_loss += loss.item()
 

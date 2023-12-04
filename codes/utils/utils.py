@@ -1,8 +1,11 @@
 import torch
 import matplotlib.pyplot as plt
+import librosa
+import numpy as np
+import yaml
 
 
-from random import shuffle, seed as rand_seed, choices
+from random import shuffle, seed as rand_seed, choices, random
 
 from numpy.random import seed as np_seed
 from torch import manual_seed
@@ -11,6 +14,7 @@ from torch.mps import manual_seed as mps_manual_seed
 
 from csv import writer as wr
 from tqdm import tqdm
+
 
 def shuffle_data(data: list):
     """
@@ -146,33 +150,43 @@ def str_csv_to_dict(param: str):
     return dict(map(lambda x: x.split("="), param.split(";")))
 
 
-def evaluate(model, val_dl, device, loss_func): 
-        model.eval()
-
+def evaluate(model, dl, device, loss_func=torch.nn.CrossEntropyLoss()): 
         running_loss = 0.0
         correct_prediction = 0
         total_prediction = 0
         
         with torch.no_grad():
-            for X, y in tqdm(val_dl):
-                print
+            for X, y in tqdm(dl):
                 X, y = X.to(device), y.to(device)
 
                 outputs = model(X)
-                
+
                 loss = loss_func(outputs, y.long())
 
                 running_loss += loss.item()
 
                 _, prediction = torch.max(outputs, 1)
+                print(prediction)
                 correct_prediction += (prediction == y).sum().item()
                 total_prediction += prediction.shape[0]
 
-            num_batches = len(val_dl)
-            avg_loss = running_loss / num_batches
-            acc = correct_prediction / total_prediction
+        num_batches = len(dl)
+        avg_loss = running_loss / num_batches
+        acc = correct_prediction / total_prediction
 
         return acc, avg_loss
+
+
+def predict(model, data, device):
+    with torch.no_grad():
+        for X in data:
+            X = X.to(device)
+            outputs = model(X)
+
+            _, prediction = torch.max(outputs, 1)
+    
+    return prediction.numpy()[-1]
+
 
 
 def save_model(model_dict, path):
@@ -185,7 +199,7 @@ def load_model(model, path):
 
 def plot_schedule_losses(train_losses, val_lossses, path):
     plt.figure()
-    plt.plot(range(train_losses), train_losses, range(len(val_lossses)), val_lossses)
+    plt.plot(range(len(train_losses)), train_losses, range(len(val_lossses)), val_lossses)
     plt.xlabel('Epoch')
     plt.ylabel('Loss')
     plt.legend(['Training Loss', 'Validation Loss'])
@@ -194,11 +208,77 @@ def plot_schedule_losses(train_losses, val_lossses, path):
 
 def plot_schedule_accuracy(train_accuracy, val_accuracy, path):
     plt.figure()
-    plt.plot(range(train_accuracy), train_accuracy, range(len(val_accuracy)), val_accuracy)
+    plt.plot(range(len(train_accuracy)), train_accuracy, range(len(val_accuracy)), val_accuracy)
     plt.xlabel('Epoch')
-    plt.ylabel('Loss')
+    plt.ylabel('Accuracy')
     plt.legend(['Training Accuracy', 'Validation Accuracy'])
     plt.savefig(path)
 
 
+def build_data_csv(path, label, probability, classes, types_aug):   
+    if int(label) in classes and random() < probability:
+        choice_aug = random_choice(types_aug)
+
+        return [
+            path, 
+            label,
+            choice_aug.get('name'),
+            dict_to_str_csv(choice_aug.get('param'))
+        ]
+
+    return [path, label, None, None]
+
+
+def save_melspectrograms_dB_settings(file="melspectrograms_dB_settings/1.npy"):
+    files = ["my_data/2/2_01.wav", "my_data/8/8_03.wav", "data/51/1_51_46.wav"]
+
+    melspectrograms_dB = []
+    for f in files:
+        y, sr = librosa.load(f, sr=48_000)
+        segment_pad = np.zeros((48_000,))
+        segment_pad[:len(y)] = y
+
+        mel_spectrogram = librosa.feature.melspectrogram(y=segment_pad, sr=48_000, n_mels=128, fmax=4096)
+        mel_spectrogram_dB = librosa.power_to_db(mel_spectrogram, ref=np.max)
+        melspectrograms_dB.append(mel_spectrogram_dB)
+
+    np.save(file, melspectrograms_dB)
+
+
+def load_melspectrograms_dB_settings(file="melspectrograms_dB_settings/1.npy"):
+    return np.load(file)
+
+
+def windowing(file, sample_rate=48_000, step_length=.01):
+    y, sr = librosa.load(file, sr=sample_rate)
+    window_length = .8
+    melspectrograms_dB = []
+
+    if len(y) < sr:
+        segment_pad = np.zeros((48_000,))
+        segment_pad[:len(y)] = y
+
+        mel_spectrogram = librosa.feature.melspectrogram(y=segment_pad, sr=sample_rate, n_mels=128, fmax=4096)
+        mel_spectrogram_dB = librosa.power_to_db(mel_spectrogram, ref=np.max)
+        melspectrograms_dB.append(mel_spectrogram_dB)
+        
+    else:
+        segment_length_samples = int(window_length * sr)
+        step_length_samples = int(step_length * sr)
+
+        num_segments = (len(y) - segment_length_samples) // step_length_samples + 1
+
+        for i in range(num_segments):
+            start = i * step_length_samples
+            end = start + step_length_samples
+            segment = y[start:end]
+
+            segment_pad = np.zeros((48_000,))
+            segment_pad[:len(segment)] = segment
+
+            mel_spectrogram = librosa.feature.melspectrogram(y=segment_pad, sr=sample_rate, n_mels=128, fmax=4096)
+            melspectrograms_dB.append(librosa.power_to_db(mel_spectrogram, ref=np.max))
+    
+
+    return melspectrograms_dB
 

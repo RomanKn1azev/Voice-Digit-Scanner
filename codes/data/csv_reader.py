@@ -28,6 +28,6 @@ class CsvReader:
                 names=['Path', 'Label', 'Name_Augmentation', 'Param_Augmentation'],
                 delimiter=','
                 )
-            df = pd.concat([df, curr_data])
+            df = pd.concat([df, curr_data], ignore_index=True)
         
         return df
