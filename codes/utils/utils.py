@@ -168,7 +168,6 @@ def evaluate(model, dl, device, loss_func=torch.nn.CrossEntropyLoss()):
                 running_loss += loss.item()
 
                 _, prediction = torch.max(outputs, 1)
-                print(prediction)
                 correct_prediction += (prediction == y).sum().item()
                 total_prediction += prediction.shape[0]
 
@@ -240,8 +239,7 @@ def save_melspectrograms_dB_settings(file="melspectrograms_dB_settings/1.npy"):
         segment_pad = np.zeros((48_000,))
         segment_pad[:len(y)] = y
 
-        mel_spectrogram = librosa.feature.melspectrogram(y=segment_pad, sr=48_000, n_mels=128, fmax=4096)
-        mel_spectrogram_dB = librosa.power_to_db(mel_spectrogram, ref=np.max)
+        mel_spectrogram_dB = build_melspectrogram_dB(segment_pad, sr)
         melspectrograms_dB.append(mel_spectrogram_dB)
 
     np.save(file, melspectrograms_dB)
@@ -251,38 +249,29 @@ def load_melspectrograms_dB_settings(file="melspectrograms_dB_settings/1.npy"):
     return np.load(file)
 
 
-def windowing(file, sample_rate=48_000, step_length=.01):
+def build_melspectrogram_dB(audio, sample_rate, n_mels=128, fmax=4096, ref=np.max):
+    mel_spectrogram = librosa.feature.melspectrogram(y=audio, sr=sample_rate, n_mels=n_mels, fmax=fmax)
+
+    return librosa.power_to_db(mel_spectrogram, ref=ref)
+
+
+def build_mel_from_file(file, sample_rate=48_000):
     y, sr = librosa.load(file, sr=sample_rate)
-    window_length = .8
-    melspectrograms_dB = []
+    mel_spectrogram_dB = None
 
     if len(y) < sr:
         segment_pad = np.zeros((48_000,))
         segment_pad[:len(y)] = y
 
-        mel_spectrogram = librosa.feature.melspectrogram(y=segment_pad, sr=sample_rate, n_mels=128, fmax=4096)
-        mel_spectrogram_dB = librosa.power_to_db(mel_spectrogram, ref=np.max)
-        melspectrograms_dB.append(mel_spectrogram_dB)
+        mel_spectrogram_dB = build_melspectrogram_dB(segment_pad, sample_rate)
         
     else:
-        segment_length_samples = int(window_length * sr)
-        step_length_samples = int(step_length * sr)
+        acceleration = len(y) / sr
+        audio_stretched = librosa.effects.time_stretch(y, rate=acceleration)  
 
-        num_segments = (len(y) - segment_length_samples) // step_length_samples + 1
+        mel_spectrogram_dB = build_melspectrogram_dB(audio_stretched, sample_rate)
 
-        for i in range(num_segments):
-            start = i * step_length_samples
-            end = start + step_length_samples
-            segment = y[start:end]
-
-            segment_pad = np.zeros((48_000,))
-            segment_pad[:len(segment)] = segment
-
-            mel_spectrogram = librosa.feature.melspectrogram(y=segment_pad, sr=sample_rate, n_mels=128, fmax=4096)
-            melspectrograms_dB.append(librosa.power_to_db(mel_spectrogram, ref=np.max))
-    
-
-    return melspectrograms_dB
+    return [mel_spectrogram_dB]
 
 
 def plot_spectra(refer, num, paths):

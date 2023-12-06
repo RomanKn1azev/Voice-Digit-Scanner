@@ -80,4 +80,3 @@ class Setup:
             paths = plot_spectra_params.get('paths')
 
             plot_spectra(refer, num, paths)
-

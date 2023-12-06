@@ -2,81 +2,85 @@ random_seed: 47
 device: mps # cpu, cuda, mps
 
 tasks:
-  # data_to_csv:
-  #     data:
-  #     - type: dir
-  #       name: original
-  #       path: data
-  #       path_to_csv: csv_data/original
+  data_to_csv:
+      data:
+      - type: dir
+        name: original
+        path: data
+        path_to_csv: csv_data/original
 
-  #       split: True
-  #       test_size: 0.05
-  #       val_size: 0.05
+        split: True
+        test_size: 0.05
+        val_size: 0.05
         
-  #       shuffle: True
+        shuffle: True
 
-  #       augmentation:
-  #         probability: 0.25 
-  #         classes:
-  #           - 0
-  #           - 1
-  #           - 2
-  #           - 3 
-  #           - 4
-  #           - 5
-  #           - 6
-  #           - 7
-  #           - 8
-  #           - 9
-  #         augmentation:
-  #           - name: change_volume
-  #             param:
-  #               level: 1.5
-  #           - name: change_tonalities
-  #             param:
-  #               n_steps: 1.5
-  #           - name: add_noise
-  #             param: 
-  #               type: pink
-  #               level: 0.1
-            
+        augmentation:
+          probability: 0.3 
+          classes:
+            - 0
+            - 1
+            - 2
+            - 3 
+            - 4
+            - 5
+            - 6
+            - 7
+            - 8
+            - 9
+          augmentation:
+            - name: change_volume
+              param:
+                level: 1.5
+            - name: change_tonalities
+              param:
+                n_steps: 1.5
+            - name: add_noise
+              param: 
+                type: pink
+                level: 0.1
+            - name: change_time_stretch
+              param:
+                rate: 0.75
 
-          
-  #     - type: dir
-  #       name: my_data
-  #       path: my_data
-  #       path_to_csv: csv_data/my_data
+      - type: dir
+        name: my_data
+        path: my_data
+        path_to_csv: csv_data/my_data
 
-  #       split: True
-  #       test_size: 0.1
-  #       val_size: 0.1
+        split: True
+        test_size: 0.1
+        val_size: 0.1
 
-  #       shuffle: True
+        shuffle: True
 
-  #       augmentation:
-  #         probability: 0.25
-  #         classes:
-  #           - 0
-  #           - 1
-  #           - 2
-  #           - 3 
-  #           - 4
-  #           - 5
-  #           - 6
-  #           - 7
-  #           - 8
-  #           - 9
-  #         augmentation:
-  #           - name: change_volume
-  #             param:
-  #               level: 1.25
-  #           - name: change_tonalities
-  #             param:
-  #               n_steps: 1.5
-  #           - name: add_noise
-  #             param: 
-  #               type: pink
-  #               level: 0.2
+        augmentation:
+          probability: 0.4
+          classes:
+            - 0
+            - 1
+            - 2
+            - 3 
+            - 4
+            - 5
+            - 6
+            - 7
+            - 8
+            - 9
+          augmentation:
+            - name: change_volume
+              param:
+                level: 1.25
+            - name: change_tonalities
+              param:
+                n_steps: 1.5
+            - name: add_noise
+              param: 
+                type: pink
+                level: 0.2
+            - name: change_time_stretch
+              param:
+                rate: 0.75
         
 
   plot_spectra:
@@ -111,32 +115,31 @@ tasks:
   #     loss: plots/model_v3/test/loss.png
   #     accuracy: plots/model_v3/test/metrics/accuracy.png
 
-  # train:
-  #   dataset:
-  #     paths:
-  #       train: 
-  #       - csv_data/original/train.csv
-  #       - csv_data/my_data/train.csv
-  #       val: 
-  #       - csv_data/original/val.csv
-  #       - csv_data/my_data/val.csv
-  #       test: 
-  #       - csv_data/original/test.csv
-  #       - csv_data/my_data/test.csv
+  train:
+    dataset:
+      paths:
+        train: 
+        - csv_data/original/train.csv
+        - csv_data/my_data/train.csv
+        val: 
+        - csv_data/original/val.csv
+        - csv_data/my_data/val.csv
+        test: 
+        - csv_data/original/test.csv
+        - csv_data/my_data/test.csv
 
-  #   dataloader:
-  #       batch_size: 8    
-  #       num_workers: 2
-  #       shuffle: True
+    dataloader:
+        batch_size: 8    
+        num_workers: 2
+        shuffle: True
 
-  #   name_arch: lite
-  #   model: codes/models/model_cnn.yml
+    name_arch: lite
+    model: codes/models/model_cnn.yml
 
-  #   results:
-  #     model_object: results/model_v4.pth
+    results:
+      model_object: results/model_v4.pth
 
-  #   plots: 
-  #     loss: plots/model_v4/train/loss.png
-
-  #     accuracy: plots/model_v4/train/metrics/accuracy.png
+    plots: 
+      loss: plots/model_v4/train/loss.png
+      accuracy: plots/model_v4/train/metrics/accuracy.png
         

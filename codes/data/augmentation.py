@@ -29,6 +29,9 @@ def change_tonalities(audio, sr, n_steps):
     """
     return librosa.effects.pitch_shift(y=audio, sr=sr, n_steps=float(n_steps))
 
+def change_time_stretch(audio, rate):
+    return librosa.effects.time_stretch(audio, rate=float(rate))
+
 def pink_noise(length, alpha=1):
     return np.random.randn(length) / np.sqrt(np.arange(1, length + 1)) ** alpha
 

@@ -1,0 +1,5 @@
+class: CNN
+name: lite
+model: codes/models/model_cnn.yml
+save_trained_weights: results/model_v4.pth
+device: cpu
